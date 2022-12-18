@@ -2,8 +2,11 @@ from github import Github
 import time
 import os
 import pytz
-from datetime import datetime
-g = Github("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")
+from datetime import datetime,timezone
+
+# token = os.environ.get("token")
+# print(token)
+g = Github("")
 
 repositary = g.get_repo("SaivijayK/Flask-application-One")
 
@@ -14,9 +17,14 @@ latest_sha = developmentBranch.commit.sha
 commit = repositary.get_commit(sha = latest_sha)
 
 commitDate = commit.commit.author.date
+# print(commitDate)
+commitDate = commitDate.replace(tzinfo=timezone.utc)
 
-present = datetime.now(pytz.timezone('GMT'))
+present = datetime.now(pytz.timezone('UTC'))
+# print(present.time())
 
-if(present.timestamp()-commitDate.timestamp()<5*60*60):
+minutes = (present-commitDate).total_seconds()/60
+
+if(minutes<5):
     print("new commit found")
-    os.system(".\pushandpull.bat")
+    os.system(".\script.bat")
